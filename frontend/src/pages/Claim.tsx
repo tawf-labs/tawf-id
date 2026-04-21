@@ -50,7 +50,7 @@ export function Claim() {
   const [errors, setErrors] = useState<Partial<FormValues>>({});
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
-  // DID is auto-derived from connected wallet — user never needs to know
+  // DID is auto-derived from connected wallet, user never needs to know
   const did = address ? addressToDID(address) : "";
 
   const validate = (): boolean => {
@@ -105,7 +105,9 @@ export function Claim() {
           <p className="text-sm mb-8" style={{ color: "var(--color-tawf-muted)" }}>
             Connect your wallet on Base Sepolia to generate a ZK proof and claim your mustahik identity.
           </p>
-          <ConnectButton />
+          <div className="flex justify-center">
+            <ConnectButton />
+          </div>
         </div>
       </div>
     );
@@ -123,12 +125,12 @@ export function Claim() {
             Prove Your Eligibility
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: "var(--color-tawf-muted)" }}>
-            Your income and asset data are used as a private witness — they never leave your device. Only the cryptographic proof is submitted on-chain.
+            Your income and asset data are used as a private witness. They never leave your device. Only the cryptographic proof is submitted on-chain.
           </p>
         </motion.div>
 
         {/* Step indicator */}
-        <div className="flex items-center gap-3 mb-10" aria-label="Claim steps">
+        <div className="flex items-center justify-center gap-3 mb-10" aria-label="Claim steps">
           {([1, 2, 3] as const).map((s) => (
             <div key={s} className="flex items-center gap-3">
               <div
@@ -161,7 +163,7 @@ export function Claim() {
               noValidate
               className="flex flex-col gap-5"
             >
-              {/* DID is auto-generated — show it as read-only info */}
+              {/* DID is auto-generated, show it as read-only info */}
               <div
                 className="p-4 rounded-xl border"
                 style={{ background: "color-mix(in srgb, var(--color-tawf-green) 5%, transparent)", borderColor: "color-mix(in srgb, var(--color-tawf-green) 15%, transparent)" }}

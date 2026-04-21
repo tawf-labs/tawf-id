@@ -83,7 +83,7 @@ export function Footer() {
           className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs"
           style={{ borderTop: "1px solid rgba(255,255,255,0.08)", color: "rgba(249,246,240,0.35)" }}
         >
-          <p>© 2026 Tawf Islamic Foundation. Research prototype — Base Sepolia.</p>
+          <p>© 2026 Tawf Islamic Foundation. Research prototype on Base Sepolia.</p>
           <p>Built with Circom · SnarkJS · Solidity · React</p>
         </div>
       </div>

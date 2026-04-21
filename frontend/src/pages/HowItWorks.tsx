@@ -18,13 +18,13 @@ const STEPS = [
     n: "01",
     actor: "Government Data Authority",
     title: "Credential Issuance",
-    desc: "The issuing authority conducts offline attribute verification and issues a BBS+-signed Verifiable Credential (VC) over the attribute vector — income, assets, dependents — conforming to the W3C VC Data Model. The credential is stored in the claimant's wallet.",
+    desc: "The issuing authority conducts offline attribute verification and issues a BBS+-signed Verifiable Credential (VC) over the attribute vector: income, assets, and dependents, conforming to the W3C VC Data Model. The credential is stored in the claimant's wallet.",
   },
   {
     n: "02",
     actor: "Mustahik Claimant",
     title: "Proof Generation",
-    desc: "The claimant selects their asnaf category and invokes the ZKP circuit. Private attributes from the VC are used as the witness to generate a Groth16 proof π and a nullifier hash η = Poseidon(sk_DID ‖ cycle_id). Proof generation runs entirely in-browser via WebAssembly — private data never leaves the device.",
+    desc: "The claimant selects their asnaf category and invokes the ZKP circuit. Private attributes from the VC are used as the witness to generate a Groth16 proof π and a nullifier hash η = Poseidon(sk_DID ‖ cycle_id). Proof generation runs entirely in-browser via WebAssembly. Private data never leaves the device.",
   },
   {
     n: "03",
@@ -36,7 +36,7 @@ const STEPS = [
     n: "04",
     actor: "Blockchain Network",
     title: "Disbursement",
-    desc: "Upon successful verification, the Disbursement Contract releases the zakat amount to the claimant's designated address on Base Sepolia. A Disbursed event is emitted with the DID, amount, cycle ID, and nullifier — creating an auditable yet privacy-respecting on-chain record.",
+    desc: "Upon successful verification, the Disbursement Contract releases the zakat amount to the claimant's designated address on Base Sepolia. A Disbursed event is emitted with the DID, amount, cycle ID, and nullifier, creating an auditable yet privacy-respecting on-chain record.",
   },
 ];
 
@@ -63,7 +63,7 @@ export function HowItWorks() {
             How ZK-DID Works
           </motion.h1>
           <motion.p {...anim(0.2)} className="text-base leading-relaxed" style={{ color: "rgba(249,246,240,0.65)" }}>
-            A complete five-actor protocol integrating W3C DID, Verifiable Credentials, and Groth16 proofs for mustahik verification — from credential issuance to on-chain disbursement.
+            A complete five-actor protocol integrating W3C DID, Verifiable Credentials, and Groth16 proofs for mustahik verification, from credential issuance to on-chain disbursement.
           </motion.p>
         </div>
       </section>
@@ -125,7 +125,7 @@ export function HowItWorks() {
             Double-Claim Prevention
           </motion.h2>
           <motion.p {...animView(0.1)} className="text-base leading-relaxed mb-6" style={{ color: "var(--color-tawf-muted)" }}>
-            Each proof submission includes a nullifier hash derived from the claimant's DID private key and the current cycle ID. The on-chain Verifier maintains a set of spent nullifiers — preventing the same mustahik from claiming zakat more than once per cycle, while revealing nothing about their identity.
+            Each proof submission includes a nullifier hash derived from the claimant's DID private key and the current cycle ID. The on-chain Verifier maintains a set of spent nullifiers, preventing the same mustahik from claiming zakat more than once per cycle, while revealing nothing about their identity.
           </motion.p>
           <motion.div
             {...animView(0.2)}

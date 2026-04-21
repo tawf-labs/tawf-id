@@ -68,7 +68,7 @@ export function About() {
             Abstract
           </motion.p>
           <motion.p {...animView(0.1)} className="text-lg leading-relaxed" style={{ color: "var(--color-tawf-ink)" }}>
-            Zakat management systems face a critical paradox: blockchain transparency inadvertently exposes the socioeconomic status of mustahik recipients. This protocol proposes a Zero-Knowledge Decentralized Identity (ZK-DID) system integrating zk-SNARKs with W3C DID standards — enabling cryptographic verification of eligibility without disclosing personal attributes or financial records.
+            Zakat management systems face a critical paradox: blockchain transparency inadvertently exposes the socioeconomic status of mustahik recipients. This protocol proposes a Zero-Knowledge Decentralized Identity (ZK-DID) system integrating zk-SNARKs with W3C DID standards, enabling cryptographic verification of eligibility without disclosing personal attributes or financial records.
           </motion.p>
           <motion.p {...animView(0.15)} className="text-base leading-relaxed mt-4" style={{ color: "var(--color-tawf-muted)" }}>
             The architecture satisfies simultaneous requirements of privacy, verifiability, scalability, and Sharia compliance. A prototype is deployed on Base Sepolia using Circom, SnarkJS, and Solidity. Evaluation focuses on proof generation overhead, on-chain verification gas costs, and resistance to identity-linkage attacks.

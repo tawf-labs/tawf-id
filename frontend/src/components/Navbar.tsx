@@ -10,10 +10,14 @@ const NAV_LINKS = [
   { to: "/dashboard", label: "Dashboard" },
 ];
 
+const GREEN_BG_PAGES = ["/about", "/how-it-works"];
+
 export function Navbar() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const onGreenPage = GREEN_BG_PAGES.includes(pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -45,20 +49,23 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav aria-label="Main navigation" className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map(({ to, label }) => (
-            <Link
-              key={to}
-              to={to}
-              className="text-xs tracking-widest uppercase font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tawf-gold rounded px-1"
-              style={{
-                color: pathname === to ? "var(--color-tawf-green)" : "var(--color-tawf-muted)",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-tawf-green)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = pathname === to ? "var(--color-tawf-green)" : "var(--color-tawf-muted)")}
-            >
-              {label}
-            </Link>
-          ))}
+          {NAV_LINKS.map(({ to, label }) => {
+            const isActive = pathname === to;
+            const activeColor = onGreenPage && !scrolled ? "var(--color-tawf-sand)" : "var(--color-tawf-green)";
+            const mutedColor = onGreenPage && !scrolled ? "rgba(249,246,240,0.6)" : "var(--color-tawf-muted)";
+            return (
+              <Link
+                key={to}
+                to={to}
+                className="text-xs tracking-widest uppercase font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tawf-gold rounded px-1"
+                style={{ color: isActive ? activeColor : mutedColor }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = activeColor)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = isActive ? activeColor : mutedColor)}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">

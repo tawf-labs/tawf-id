@@ -98,7 +98,7 @@ export function Landing() {
               className="text-lg leading-relaxed mb-10 max-w-xl"
               style={{ color: "var(--color-tawf-muted)" }}
             >
-              tawf-did integrates zero-knowledge proof systems with W3C Decentralized Identifier standards — enabling cryptographic verification of mustahik eligibility without disclosing personal attributes or financial records.
+              tawf-did integrates zero-knowledge proof systems with W3C Decentralized Identifier standards, enabling cryptographic verification of mustahik eligibility without disclosing personal attributes or financial records.
             </motion.p>
             <motion.div {...anim(0.3)} className="flex flex-wrap gap-4">
               <Link
@@ -295,7 +295,7 @@ export function Landing() {
             Dignity through cryptography. Not as promises — as on-chain reality.
           </motion.h2>
           <motion.p {...animView(0.2)} className="text-base leading-relaxed mb-10" style={{ color: "var(--color-tawf-muted)" }}>
-            tawf-did will power identity verification across ziswaf.tawf.foundation — giving every mustahik a self-sovereign, privacy-preserving credential that satisfies both Sharia requirements and cryptographic soundness.
+            tawf-did will power identity verification across ziswaf.tawf.foundation, giving every mustahik a self-sovereign, privacy-preserving credential that satisfies both Sharia requirements and cryptographic soundness.
           </motion.p>
           <motion.div {...animView(0.3)} className="flex flex-wrap justify-center gap-4">
             <Link
