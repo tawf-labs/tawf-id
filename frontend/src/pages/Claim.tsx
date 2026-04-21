@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
@@ -126,6 +127,12 @@ export function Claim() {
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: "var(--color-tawf-muted)" }}>
             Your income and asset data are used as a private witness. They never leave your device. Only the cryptographic proof is submitted on-chain.
+          </p>
+          <p className="text-xs mt-2" style={{ color: "var(--color-tawf-muted)" }}>
+            Not sure if you qualify?{" "}
+            <Link to="/asnaf" className="underline transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-tawf-gold rounded" style={{ color: "var(--color-tawf-green)" }}>
+              Learn about the 8 Asnaf
+            </Link>
           </p>
         </motion.div>
 

@@ -6,11 +6,12 @@ import { Menu, X } from "lucide-react";
 const NAV_LINKS = [
   { to: "/about", label: "Protocol" },
   { to: "/how-it-works", label: "How It Works" },
+  { to: "/asnaf", label: "Asnaf" },
   { to: "/claim", label: "Claim" },
   { to: "/dashboard", label: "Dashboard" },
 ];
 
-const GREEN_BG_PAGES = ["/about", "/how-it-works"];
+const GREEN_BG_PAGES = ["/about", "/how-it-works", "/asnaf"];
 
 export function Navbar() {
   const { pathname } = useLocation();

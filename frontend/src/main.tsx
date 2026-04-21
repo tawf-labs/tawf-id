@@ -11,6 +11,7 @@ import { Landing } from "./pages/Landing";
 import { HowItWorks } from "./pages/HowItWorks";
 import { About } from "./pages/About";
 import { Claim } from "./pages/Claim";
+import { Asnaf } from "./pages/Asnaf";
 import { Dashboard } from "./pages/Dashboard";
 import "./styles/index.css";
 
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 <Route path="how-it-works" element={<HowItWorks />} />
                 <Route path="about" element={<About />} />
                 <Route path="claim" element={<Claim />} />
+                <Route path="asnaf" element={<Asnaf />} />
                 <Route path="dashboard" element={<Dashboard />} />
               </Route>
             </Routes>
