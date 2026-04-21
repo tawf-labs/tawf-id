@@ -12,6 +12,7 @@ const FOOTER_LINKS = {
     { label: "Verify Proof", to: "/dashboard" },
   ],
   Ecosystem: [
+    { label: "tawf.foundation", href: "https://tawf.foundation" },
     { label: "ziswaf.tawf.foundation", href: "https://ziswaf.tawf.foundation" },
     { label: "Base Sepolia", href: "https://sepolia.basescan.org" },
     { label: "W3C DID Spec", href: "https://www.w3.org/TR/did-core/" },
@@ -36,7 +37,19 @@ export function Footer() {
               tawf-did
             </p>
             <p className="text-sm leading-relaxed" style={{ color: "rgba(249,246,240,0.55)" }}>
-              Zero-Knowledge Decentralized Identity for privacy-preserving mustahik verification.
+              Zero-Knowledge Decentralized Identity for privacy-preserving mustahik verification. Built for{" "}
+              <a
+                href="https://tawf.foundation"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors duration-200"
+                style={{ color: "var(--color-tawf-gold)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.75")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+              >
+                tawf.foundation
+              </a>{" "}
+              by Tawf Labs.
             </p>
           </div>
           {Object.entries(FOOTER_LINKS).map(([section, links]) => (
