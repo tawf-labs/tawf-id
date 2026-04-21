@@ -1,0 +1,10 @@
+{
+  "name": "tawf-did",
+  "private": true,
+  "workspaces": ["contracts", "frontend"],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "test:contracts": "npm run test --workspace=contracts"
+  }
+}

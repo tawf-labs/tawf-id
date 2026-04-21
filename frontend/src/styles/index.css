@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@theme {
+  --color-tawf-green: #0f3d30;
+  --color-tawf-green-light: #1a5242;
+  --color-tawf-gold: #c5a869;
+  --color-tawf-gold-light: #d4bc8a;
+  --color-tawf-sand: #f9f6f0;
+  --color-tawf-sand-dark: #f0ebe0;
+  --color-tawf-ink: #1a1a1a;
+  --color-tawf-muted: #6b7280;
+  --color-tawf-white: #ffffff;
+
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --radius-card: 1rem;
+  --radius-box: 1.5rem;
+  --radius-button: 9999px;
+
+  --spacing-section: 6rem;
+  --spacing-section-mobile: 4rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-tawf-sand);
+  color: var(--color-tawf-ink);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-tawf-gold) 30%, transparent);
+  color: var(--color-tawf-green);
+}
+
+/* Skip to main content */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--color-tawf-green);
+  color: var(--color-tawf-sand);
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-size: 0.875rem;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

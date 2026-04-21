@@ -1,0 +1,5 @@
+# Circuit artifacts go here after running: cd circuits && npm run copy:frontend
+# Required files:
+#   mustahik_eligibility.wasm
+#   mustahik_eligibility_final.zkey
+#   verification_key.json

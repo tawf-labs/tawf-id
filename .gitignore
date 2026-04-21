@@ -1,0 +1,12 @@
+node_modules/
+.env
+dist/
+out/
+build/
+cache/
+typechain-types/
+artifacts/
+broadcast/
+*.ptau
+frontend/public/circuits/*.zkey
+frontend/public/circuits/*.wasm
