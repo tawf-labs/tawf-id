@@ -43,7 +43,7 @@ export function Navbar() {
         <Link
           to="/"
           className="text-2xl font-medium tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tawf-gold rounded"
-          style={{ fontFamily: "var(--font-serif)", color: "var(--color-tawf-green)" }}
+          style={{ fontFamily: "var(--font-serif)", color: onGreenPage && !scrolled ? "var(--color-tawf-sand)" : "var(--color-tawf-green)" }}
         >
           tawf-did
         </Link>
@@ -76,7 +76,7 @@ export function Navbar() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            style={{ color: "var(--color-tawf-green)" }}
+            style={{ color: onGreenPage && !scrolled ? "var(--color-tawf-sand)" : "var(--color-tawf-green)" }}
           >
             {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
           </button>
