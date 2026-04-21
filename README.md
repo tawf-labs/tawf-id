@@ -98,6 +98,8 @@ npm test
 
 **Circuit:** `circuits/mustahik_eligibility.circom`
 
+> **Scope:** This circuit implements eligibility verification for the *fakir* (destitute) and *miskin* (poor) asnaf categories — the two largest recipient populations with quantifiable income/asset predicates. The architecture is extensible to other categories; see the Limitations & Future Work section of the paper.
+
 | Signal | Type | Description |
 |--------|------|-------------|
 | `income` | private | Monthly income in IDR |

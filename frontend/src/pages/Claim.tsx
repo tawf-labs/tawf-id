@@ -131,7 +131,7 @@ export function Claim() {
           <p className="text-xs mt-2" style={{ color: "var(--color-tawf-muted)" }}>
             Not sure if you qualify?{" "}
             <Link to="/asnaf" className="underline transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-tawf-gold rounded" style={{ color: "var(--color-tawf-green)" }}>
-              Learn about the 8 Asnaf
+              Learn about the Asnaf categories
             </Link>
           </p>
         </motion.div>

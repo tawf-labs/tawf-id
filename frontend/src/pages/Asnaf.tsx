@@ -129,7 +129,7 @@ export function Asnaf() {
             The 8 Asnaf
           </motion.h1>
           <motion.p {...anim(0.2)} className="text-base leading-relaxed" style={{ color: "rgba(249,246,240,0.65)" }}>
-            The Quran specifies 8 categories of people eligible to receive Zakat. tawf-did uses zero-knowledge proofs to verify eligibility for these categories without disclosing personal financial data.
+          The Quran specifies 8 categories of people eligible to receive Zakat. tawf-did currently implements zero-knowledge proof verification for the <strong>Fakir</strong> and <strong>Miskin</strong> categories, which admit quantifiable income and asset predicates. The remaining six categories are identified for future work.
           </motion.p>
         </div>
       </section>

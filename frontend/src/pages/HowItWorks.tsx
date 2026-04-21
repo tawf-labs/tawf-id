@@ -24,7 +24,7 @@ const STEPS = [
     n: "02",
     actor: "Mustahik Claimant",
     title: "Proof Generation",
-    desc: "The claimant selects their asnaf category and invokes the ZKP circuit. Private attributes from the VC are used as the witness to generate a Groth16 proof π and a nullifier hash η = Poseidon(sk_DID ‖ cycle_id). Proof generation runs entirely in-browser via WebAssembly. Private data never leaves the device.",
+    desc: "The claimant invokes the fakir/miskin eligibility ZKP circuit. Private attributes from the VC are used as the witness to generate a Groth16 proof π and a nullifier hash η = Poseidon(sk_DID ‖ cycle_id). Proof generation runs entirely in-browser via WebAssembly. Private data never leaves the device.",
   },
   {
     n: "03",
