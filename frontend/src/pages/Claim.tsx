@@ -85,6 +85,7 @@ export function Claim() {
       abi: DISBURSEMENT_ABI,
       functionName: "disburse",
       args: [did, address, BigInt(0), pA, pB, pC, pubSignals],
+      gas: BigInt(1_000_000),
     });
   };
 
