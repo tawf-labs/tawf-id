@@ -4,7 +4,7 @@
  * Private witness data never leaves this worker context.
  */
 import * as snarkjs from "snarkjs";
-import { buildPoseidon } from "circomlibjs";
+import { poseidon3 } from "poseidon-lite";
 
 export type ProverInput = {
   income: string;
@@ -22,9 +22,7 @@ export type ProverResult =
 self.onmessage = async (e: MessageEvent<ProverInput>) => {
   try {
     const { income, assets, sk_did } = e.data;
-    const poseidon = await buildPoseidon();
-    const hash = poseidon([BigInt(income), BigInt(assets), BigInt(sk_did)]);
-    const commitment = poseidon.F.toString(hash);
+    const commitment = poseidon3([BigInt(income), BigInt(assets), BigInt(sk_did)]).toString();
 
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
       { ...e.data, commitment },
