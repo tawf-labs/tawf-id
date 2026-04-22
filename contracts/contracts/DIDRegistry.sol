@@ -22,6 +22,8 @@ contract DIDRegistry {
     error DIDNotFound(string did);
     error DIDInactive(string did);
     error NotDIDOwner(string did);
+    error EmptyDID();
+    error ZeroDocHash();
 
     modifier onlyOwner(string calldata did) {
         if (_records[did].owner == address(0)) revert DIDNotFound(did);
@@ -31,6 +33,8 @@ contract DIDRegistry {
 
     /// @notice Register a new DID with its document hash.
     function registerDID(string calldata did, bytes32 docHash) external {
+        if (bytes(did).length == 0) revert EmptyDID();
+        if (docHash == bytes32(0)) revert ZeroDocHash();
         if (_records[did].owner != address(0)) revert DIDAlreadyExists(did);
         _records[did] = DIDRecord({ docHash: docHash, owner: msg.sender, active: true, updatedAt: block.timestamp });
         emit DIDRegistered(did, msg.sender, docHash);
@@ -38,6 +42,7 @@ contract DIDRegistry {
 
     /// @notice Update the document hash for an existing DID.
     function updateDID(string calldata did, bytes32 newDocHash) external onlyOwner(did) {
+        if (newDocHash == bytes32(0)) revert ZeroDocHash();
         if (!_records[did].active) revert DIDInactive(did);
         _records[did].docHash = newDocHash;
         _records[did].updatedAt = block.timestamp;

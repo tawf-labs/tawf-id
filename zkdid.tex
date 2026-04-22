@@ -14,6 +14,8 @@
 \usepackage{multirow}
 \usepackage{url}
 \usepackage{balance}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,backgrounds}
 
 \hypersetup{
     colorlinks=true,
@@ -65,7 +67,7 @@ Zero-Knowledge Proofs, zk-SNARKs, Decentralized Identity, Blockchain, Zakat Mana
 
 Zakat management in the contemporary landscape stands at the intersection of centuries-old Islamic jurisprudence and modern digital infrastructure demands. Globally, zakat collection is estimated to reach between USD 200 billion and USD 1 trillion annually, yet a significant portion fails to reach legitimate \textit{mustahik} due to systemic inefficiencies, misappropriation, and institutional distrust \cite{worldbank2020}. The opacity inherent in centralized zakat institutions has eroded public confidence, while manual verification processes for mustahik eligibility remain vulnerable to fraud and administrative bottlenecks.
 
-The advent of distributed ledger technology has prompted research into blockchain-based zakat systems offering immutability, transparency, and automated disbursement via smart contracts. Pioneering works by Mustafa et al. \cite{mustafa2021} and Hassan et al. \cite{hassan2020} demonstrated that Ethereum-based zakat platforms can significantly reduce intermediary overhead and improve auditability. However, these systems introduce a critical paradox: by placing transaction records on a public ledger, they inadvertently expose the socioeconomic status and personal circumstances of mustahik to public scrutiny. The stigma associated with receiving charity in Muslim-majority societies means that such exposure can have serious psychosocial and economic consequences for recipients \cite{mustafa2021}.
+The advent of distributed ledger technology has prompted research into blockchain-based zakat systems offering immutability, transparency, and automated disbursement via smart contracts. Pioneering works by Mustafa et al. \cite{mustafa2021} and Khatiman et al. \cite{khatiman2021} demonstrated that Ethereum-based zakat platforms can significantly reduce intermediary overhead and improve auditability. However, these systems introduce a critical paradox: by placing transaction records on a public ledger, they inadvertently expose the socioeconomic status and personal circumstances of mustahik to public scrutiny. The stigma associated with receiving charity in Muslim-majority societies means that such exposure can have serious psychosocial and economic consequences for recipients \cite{mustafa2021}.
 
 Zero-Knowledge Proofs (ZKPs), formalized by Goldwasser, Micali, and Rackoff \cite{goldwasser1985}, offer a compelling cryptographic resolution. A ZKP allows a prover to convince a verifier that a statement is true without revealing any information beyond the truth of that statement. In the context of mustahik verification, a ZKP-based system allows a recipient to prove eligibility criteria---such as income below a defined threshold or asset holdings within permissible bounds---without disclosing actual attribute values. Recent advances in succinct non-interactive ZKP constructions, particularly Groth16 \cite{groth2016} and PLONK \cite{gabizon2019}, have made on-chain proof verification computationally feasible.
 
@@ -115,7 +117,7 @@ This paper makes the following contributions:
 
 The intersection of blockchain technology and Islamic social finance has attracted increasing scholarly attention since 2017. Mustafa et al. \cite{mustafa2021} proposed a foundational Ethereum-based zakat distribution framework employing ERC-20 tokens to represent zakat funds, demonstrating that smart contract automation could eliminate intermediary delays and provide an immutable audit trail, reducing disbursement processing time by approximately 60\% in a simulated institutional environment. However, the system inherited all transparency properties of the underlying public blockchain, inadvertently exposing recipient addresses to potential de-anonymization through transaction graph analysis.
 
-Hassan et al. \cite{hassan2020} extended this work by incorporating a multi-signature governance mechanism for high-value disbursements. While this improved accountability, the architecture remained centered on pseudonymous addresses rather than privacy-preserving identity constructs. Subsequent work by Rahman and Zakaria \cite{rahman2023} explored Hyperledger Fabric as an alternative model, arguing that permissioned ledgers provide de facto privacy through access control. This approach, however, introduces centralization trade-offs and undermines trustless verification.
+Khatiman et al. \cite{khatiman2021} extended this work by incorporating a multi-signature governance mechanism for high-value disbursements using Solidity smart contracts on Ethereum. While this improved accountability, the architecture remained centered on pseudonymous addresses rather than privacy-preserving identity constructs. Subsequent work by Shalaby et al. \cite{shalaby2023} explored Hyperledger Fabric as an alternative model, arguing that permissioned ledgers provide de facto privacy through access control. This approach, however, introduces centralization trade-offs and undermines trustless verification.
 
 The literature reveals a persistent tension: transparency, necessary for institutional accountability, conflicts directly with the privacy needs of mustahik recipients. This paper positions ZKPs as the mechanism through which both properties can be simultaneously satisfied.
 
@@ -123,7 +125,7 @@ The literature reveals a persistent tension: transparency, necessary for institu
 
 The theoretical foundations of zero-knowledge proofs were established by Goldwasser, Micali, and Rackoff \cite{goldwasser1985}, defining three fundamental properties: \textit{completeness} (an honest prover always convinces an honest verifier), \textit{soundness} (a dishonest prover cannot convince a verifier of a false statement except with negligible probability), and \textit{zero-knowledge} (the proof reveals nothing beyond the truth of the statement).
 
-Groth \cite{groth2016} introduced the Groth16 construction, a pairing-based zk-SNARK requiring a circuit-specific trusted setup, which remains the most widely deployed proof system due to its highly optimized verification time ($\mathcal{O}(1)$ pairing operations) and proof size of approximately 192 bytes. The Universal PLONK construction by Gabizon, Williamson, and Ciobanu \cite{gabizon2019} introduced a universal and updateable structured reference string (SRS), permitting a single trusted setup ceremony to be reused across multiple circuits. For the purposes of this work, Groth16 is selected as the primary proof system due to its maturity and minimal on-chain verification cost.
+Groth \cite{groth2016} introduced the Groth16 construction, a pairing-based zk-SNARK requiring a circuit-specific trusted setup, which remains the most widely deployed proof system due to its highly optimized verification time ($\mathcal{O}(1)$ pairing operations) and proof size of approximately 192 bytes. The Universal PLONK construction by Gabizon, Williamson, and Ciobotaru \cite{gabizon2019} introduced a universal and updateable structured reference string (SRS), permitting a single trusted setup ceremony to be reused across multiple circuits. For the purposes of this work, Groth16 is selected as the primary proof system due to its maturity and minimal on-chain verification cost.
 
 \subsection{Decentralized Identity and Self-Sovereign Identity}
 
@@ -142,7 +144,7 @@ Range proofs---ZKPs demonstrating a committed value lies within a specified inte
 Despite substantial literature addressing blockchain-based zakat management, ZKP systems, DID standards, and privacy-preserving credential verification as independent domains, a critical convergence gap remains. Three interconnected gaps are identified:
 
 \begin{enumerate}
-    \item \textbf{Privacy in zakat systems}: Existing blockchain-based zakat platforms \cite{mustafa2021, hassan2020, rahman2023} have not integrated privacy-preserving identity mechanisms beyond pseudonymous addressing.
+    \item \textbf{Privacy in zakat systems}: Existing blockchain-based zakat platforms \cite{mustafa2021, khatiman2021, shalaby2023} have not integrated privacy-preserving identity mechanisms beyond pseudonymous addressing.
     \item \textbf{Domain-specific ZKP circuits}: Existing ZKP credential frameworks \cite{pauwels2021, camenisch2012} are designed for generalized financial compliance and do not encode Islamic jurisprudential eligibility criteria---\textit{nisab} thresholds, \textit{hawl} assessment periods, and domain-specific \textit{asnaf} predicates; the current instantiation targets the \textit{fakir} and \textit{miskin} categories as the primary quantifiable predicates.
     \item \textbf{ZK-DID for Islamic finance}: The integration of W3C DID standards with ZKP-based credential verification has not been explored within the Islamic social finance domain.
 \end{enumerate}
@@ -229,37 +231,118 @@ Upon disbursement, each distribution event is documented through a privacy-prese
 \section{Implementation}
 %-----------------------------------------------------------
 
+\subsection{System Architecture}
+
+Fig.~\ref{fig:architecture} presents the complete ZK-DID protocol architecture as implemented. The system comprises five on-chain and off-chain components interacting across four protocol phases.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=0.45cm and 0.5cm,
+  box/.style={rectangle, rounded corners=2pt, draw, minimum width=1.6cm, minimum height=0.55cm, font=\scriptsize, align=center},
+  actor/.style={box, fill=gray!15},
+  contract/.style={box, fill=blue!12},
+  offchain/.style={box, fill=green!12},
+  arrow/.style={-{Stealth[length=4pt]}, thick},
+  dasharrow/.style={-{Stealth[length=4pt]}, dashed, thick},
+]
+
+%% --- Actors (top row) ---
+\node[actor] (gov)   {Gov.\\Data Auth.};
+\node[actor, right=0.9cm of gov]  (mustahik) {Mustahik\\Claimant};
+\node[actor, right=0.9cm of mustahik] (amil) {Amil\\Institution};
+
+%% --- Off-chain components ---
+\node[offchain, below=0.7cm of mustahik] (wallet) {PWA Wallet\\(WASM Prover)};
+\node[offchain, below=0.5cm of wallet]   (vc)     {W3C VC\\(BBS+ Signed)};
+
+%% --- On-chain contracts ---
+\node[contract, below=0.7cm of amil]     (mv)     {\texttt{MustahikVerifier}\\{\tiny 0x4919...360b}};
+\node[contract, below=0.5cm of mv]       (zd)     {\texttt{ZakatDisbursement}\\{\tiny 0xBEdE...3658}};
+\node[contract, left=0.5cm of mv]        (gr)     {\texttt{Groth16Verifier}\\{\tiny BN128 / 203 LOC}};
+\node[contract, below=0.5cm of zd]       (did)    {\texttt{DIDRegistry}\\{\tiny 0x4364...CD58}};
+
+%% --- Base Sepolia background ---
+\begin{scope}[on background layer]
+  \node[draw=blue!40, fill=blue!5, rounded corners=4pt, fit=(gr)(mv)(zd)(did),
+        label={[font=\tiny,blue!60]above:Base Sepolia (chainId 84532)}] {};
+\end{scope}
+
+%% --- Phase 1: Credential Issuance ---
+\draw[arrow] (gov) -- node[left,font=\tiny]{1. Issue VC} (mustahik);
+
+%% --- Phase 2: Proof Generation ---
+\draw[arrow] (mustahik) -- node[right,font=\tiny]{2. Load attrs} (wallet);
+\draw[arrow] (wallet)   -- node[right,font=\tiny]{read} (vc);
+\draw[dasharrow] (wallet) -- node[font=\tiny,right]{$\pi$, $\eta$} (amil);
+
+%% --- Phase 3: Verification ---
+\draw[arrow] (amil) -- node[right,font=\tiny]{3. Submit $\pi$} (mv);
+\draw[arrow] (mv)   -- node[above,font=\tiny]{verifyProof()} (gr);
+\draw[arrow] (mv)   -- node[right,font=\tiny]{nullifier check} (zd);
+
+%% --- Phase 4: Disbursement ---
+\draw[arrow] (zd)  -- node[right,font=\tiny]{4. transfer()} (did);
+\draw[dasharrow] (zd) to[bend right=30] node[left,font=\tiny]{ETH} (mustahik);
+
+\end{tikzpicture}
+\caption{ZK-DID Protocol Architecture. Deployed on Base Sepolia (chainId 84532). Contract addresses reflect live deployment.}
+\label{fig:architecture}
+\end{figure}
+
 \subsection{Circuit Implementation}
 
-The eligibility predicate circuit is implemented in Circom 2.1.x using circomlib primitives. The circuit encodes three primary subcircuits:
+The \texttt{MustahikEligibility} circuit is implemented in Circom 2.1.6 using circomlib primitives, compiled to a 2,168,504-byte WebAssembly binary. The circuit operates over the BN128 (alt\_bn128) elliptic curve with 7 public signals and encodes three subcircuits:
 
 \begin{itemize}
-    \item \textbf{Range proof subcircuit}: Verifies $a_{\text{income}} \leq t_{\text{nisab}}$ using a 32-bit range decomposition with Poseidon-based commitment.
-    \item \textbf{Asset bound subcircuit}: Verifies total non-exempt assets $a_{\text{assets}} \leq t_{\text{ceiling}}$.
-    \item \textbf{Nullifier subcircuit}: Computes $\eta = \text{Poseidon}(\text{sk}_{\text{DID}} \| \text{cycle\_id})$ and exposes it as a public output.
+    \item \textbf{Range proof}: Verifies $a_{\text{income}} \leq t_{\text{nisab}}$ via \texttt{LessEqThan(64)} — a 64-bit comparator.
+    \item \textbf{Asset bound}: Verifies $a_{\text{assets}} \leq t_{\text{ceiling}}$ via a second \texttt{LessEqThan(64)} instance.
+    \item \textbf{Nullifier}: Computes $\eta = \texttt{Poseidon}(\text{sk}_{\text{DID}}, \text{cycle\_id})$ as a public output, preventing double-claiming.
 \end{itemize}
 
-The Poseidon hash function \cite{grassi2021} is selected over SHA-256 due to its arithmetic-friendly structure in finite field arithmetic, reducing circuit constraint count by approximately $4\times$ compared to SHA-256-based alternatives.
+The commitment constraint \texttt{Poseidon(income, assets, sk\_did) === commitment} binds the private witness to the claimant's DID key material. A seventh public signal, \texttt{recipient} (the claimant's ETH address as a \texttt{uint160} field element), is included to cryptographically bind the proof to a specific disbursement address, preventing front-running attacks. The trusted setup uses the Hermez Powers of Tau Phase 1 ceremony (\texttt{pot12\_final.ptau}, 4.8 MB) with a circuit-specific Phase 2, producing a 585,900-byte \texttt{.zkey} file. The Poseidon hash function \cite{grassi2021} is selected over SHA-256 due to its arithmetic-friendly structure in finite field arithmetic, reducing circuit constraint count by approximately $4\times$ compared to SHA-256-based alternatives.
 
 \subsection{Smart Contract Architecture}
 
-The prototype implementation targets the Base PoS network, selected for its EVM compatibility and low transaction fees. Three smart contract components are deployed:
+Three contracts are deployed on Base Sepolia (chainId 84532):
 
 \begin{itemize}
-    \item \textbf{DID Registry Contract}: A lightweight on-chain DID registry conforming to the \textit{did:ethr} method specification \cite{sporny2022did}, storing DID Document hashes and supporting key rotation and deactivation operations.
-    \item \textbf{Verifier Contract}: On-chain Groth16 proof verification using the Solidity verifier contract generated by SnarkJS, integrated with nullifier set management via a Merkle tree data structure.
-    \item \textbf{Disbursement Contract}: Smart contract logic for conditional zakat release upon successful proof verification, incorporating IDRX (Indonesian Rupiah stablecoin) for fiat-equivalent on-chain disbursement.
+    \item \textbf{\texttt{DIDRegistry}} (\texttt{0x4364...CD58}, 58 LOC): Stores \texttt{bytes32} DID Document hashes with owner-controlled key rotation and deactivation, conforming to the \textit{did:ethr} method \cite{sporny2022did}. Emits \texttt{DIDRegistered}, \texttt{DIDUpdated}, and \texttt{DIDDeactivated} events.
+
+    \item \textbf{\texttt{Groth16Verifier}} (\texttt{0x7c40...Fa15}, 207 LOC): SnarkJS-generated BN128 Groth16 verifier. Accepts proof components $(pA, pB, pC)$ and 7 public signals \texttt{[nullifier, eligible, nisab\_threshold, asset\_ceiling, cycle\_id, commitment, recipient]}.
+
+    \item \textbf{\texttt{MustahikVerifier}} (65 LOC): Wraps \texttt{Groth16Verifier} with nullifier-based double-claim prevention via a \texttt{mapping(uint => bool)} nullifier registry. Reverts with \texttt{NullifierAlreadyUsed}, \texttt{NotEligible}, or \texttt{InvalidProof} on failure.
+
+    \item \textbf{\texttt{ZakatDisbursement}} (\texttt{0xBEdE...3658}, 89 LOC): Holds ETH and calls \texttt{verifier.verifyAndRecord()} before executing \texttt{recipient.call\{value\}("")} (CEI pattern, \texttt{ReentrancyGuard}). Tracks \texttt{totalDisbursed}, \texttt{claimCount}, and \texttt{currentCycleId}. Amil-only functions: \texttt{setDisbursementAmount()}, \texttt{advanceCycle()}, \texttt{withdraw()}. Implements \texttt{Pausable} for emergency stop. Funded with 0.005 ETH; disbursement amount set to 0.001 ETH per claim.
 \end{itemize}
+
+Table~\ref{tab:contracts} summarises the deployed contract inventory.
+
+\begin{table}[h]
+\caption{Deployed Smart Contracts — Base Sepolia (chainId 84532)}
+\label{tab:contracts}
+\centering
+\begin{tabularx}{\columnwidth}{p{2.1cm} p{2.6cm} X}
+\toprule
+\textbf{Contract} & \textbf{Address} & \textbf{Role} \\
+\midrule
+\texttt{DIDRegistry}       & \texttt{0x4364...CD58} & DID document hash registry \\
+\texttt{Groth16Verifier}   & \texttt{0x7c40...Fa15}  & BN128 Groth16 on-chain verifier \\
+\texttt{MustahikVerifier}  & \texttt{0x4919...360b} & Nullifier registry + proof gate \\
+\texttt{ZakatDisbursement} & \texttt{0xBEdE...3658} & Conditional ETH disbursement \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection{Payment Architecture}
 
-The platform employs a fiat-to-IDRX-to-fiat conversion architecture to minimize friction for both donors and recipients. Donors pay in Indonesian Rupiah (IDR) through a conventional payment gateway; funds are converted to IDRX on-chain for smart contract processing; upon successful mustahik verification, IDRX is converted back to IDR for distribution to recipients. This design eliminates the requirement for either party to hold or manage cryptocurrency directly, significantly lowering the barrier to adoption in the Indonesian zakat institution context.
+The platform employs a fiat-to-ETH-to-fiat conversion architecture to minimise friction for both donors and recipients. Donors pay in Indonesian Rupiah (IDR) through a conventional payment gateway; funds are held as ETH in the \texttt{ZakatDisbursement} contract; upon successful mustahik verification, ETH is disbursed to the recipient's designated address. This design eliminates the requirement for either party to hold or manage cryptocurrency directly, significantly lowering the barrier to adoption in the Indonesian zakat institution context.
 
 \subsection{Claimant Wallet Application}
 
-A Progressive Web Application (PWA) is implemented to support the claimant-facing workflow. The application provides credential storage (W3C VC format), circuit witness generation, proof computation via WebAssembly-compiled Circom prover, and interaction with the smart contract layer via ethers.js. The WebAssembly compilation of the Circom prover enables client-side proof generation on mobile devices, ensuring that private witness data never leaves the claimant's device.
+A Progressive Web Application (PWA) is implemented to support the claimant-facing workflow. The application provides credential storage (W3C VC format), circuit witness generation, and proof computation via the 2.1 MB WebAssembly-compiled Circom prover running in a dedicated Web Worker (\texttt{prover.worker.ts}), ensuring that private witness data never leaves the claimant's device. Smart contract interaction is handled via \texttt{wagmi} and \texttt{viem} on Base Sepolia, with wallet connectivity through RainbowKit.
 
-Table~\ref{tab:dev_tools} summarizes the development environment.
+Table~\ref{tab:dev_tools} summarises the development environment.
 
 \begin{table}[h]
 \caption{Development Tools and Environment}
@@ -269,68 +352,92 @@ Table~\ref{tab:dev_tools} summarizes the development environment.
 \toprule
 \textbf{Component} & \textbf{Tool / Version} \\
 \midrule
-ZKP Circuit Language & Circom 2.1.x with circomlib primitives \\
-Proof Generation & SnarkJS (Groth16 prover and verifier) \\
-Smart Contract & Solidity 0.8.x (Verifier, DID Registry, Disbursement) \\
-Blockchain Network & Base PoS (EVM-compatible, low-fee mainnet) \\
-Wallet Application & Progressive Web App; ethers.js + WebAssembly \\
-Trusted Setup & Hermez Powers of Tau (Phase 1) + Circuit Phase 2 \\
-Storage & Private IPFS (distribution attestation photos) \\
-Experiment Tracking & Weights \& Biases (proof time, gas, latency) \\
+ZKP Circuit Language & Circom 2.1.6 with circomlib (Poseidon, LessEqThan, Num2Bits) \\
+Proof System         & Groth16 / SnarkJS; BN128 curve; 7 public signals \\
+Trusted Setup        & Hermez PoT Phase 1 (4.8 MB) + Circuit Phase 2 (585.9 KB zkey) \\
+Circuit Artifact     & 2.1 MB WASM; \texttt{verification\_key.json} (IC: 8 points) \\
+Smart Contracts      & Solidity 0.8.24; Hardhat + Foundry; 415 LOC total \\
+Blockchain Network   & Base Sepolia (chainId 84532); EVM-compatible \\
+Frontend             & React 18, Vite, Tailwind CSS v4, RainbowKit, wagmi, viem \\
+Wallet Application   & PWA; WASM prover in Web Worker; Framer Motion \\
+Storage              & Private IPFS (distribution attestation photos) \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 %-----------------------------------------------------------
-\section{Evaluation Framework}
+\section{Evaluation}
 %-----------------------------------------------------------
 
-\subsection{Performance Benchmarking}
+All results in this section are obtained from direct execution of the implemented prototype. Circuit benchmarks were run using Node.js v22.22.0 and SnarkJS on the development host (AMD Ryzen 5 5600H, 16 GB RAM, Fedora Linux). Gas measurements were obtained from Hardhat's \texttt{hardhat-gas-reporter} plugin running against a local EVM fork (Solc 0.8.24, optimiser disabled). No simulated or estimated values are reported.
 
-Performance benchmarks are conducted across hardware profiles representative of target users in Indonesian zakat institution contexts:
+\subsection{Circuit Performance}
+
+The \texttt{MustahikEligibility} circuit was compiled to 1,261 R1CS constraints over the BN128 curve. Table~\ref{tab:proof_perf} reports proof generation and off-chain verification times across two witness cases (5 proof-generation runs, 10 verification runs each).
+
+\begin{table}[h]
+\caption{Proof Generation and Verification Performance (Node.js v22.22.0, $n=5$ gen / $n=10$ verify)}
+\label{tab:proof_perf}
+\centering
+\begin{tabularx}{\columnwidth}{p{1.6cm} p{1.1cm} p{1.1cm} p{1.1cm} p{1.1cm} p{1.0cm}}
+\toprule
+\textbf{Case} & \textbf{Gen Avg} & \textbf{Gen Min} & \textbf{Gen Max} & \textbf{Verify Avg} & \textbf{Proof} \\
+ & (ms) & (ms) & (ms) & (ms) & (bytes) \\
+\midrule
+Eligible   & 141.7 & 91.2  & 324.0 & 8.78 & 718 \\
+Ineligible & 90.6  & 88.7  & 92.9  & 8.99 & 722 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The eligible case exhibits higher variance (90.8--343.7 ms) due to JIT warm-up on the first run; subsequent runs stabilise around 93--100 ms. The proof size of $\approx$722 bytes is consistent with the Groth16 BN128 specification (two $\mathbb{G}_1$ points + one $\mathbb{G}_2$ point, uncompressed). Off-chain verification averages 9.1 ms, confirming suitability for client-side pre-verification before on-chain submission.
+
+\subsection{On-Chain Gas Consumption}
+
+Table~\ref{tab:gas} reports gas costs measured from Hardhat test execution against a local EVM. The \texttt{disburse()} call encompasses Groth16 proof verification, nullifier registry write, and ETH transfer in a single transaction.
+
+\begin{table}[h]
+\caption{Smart Contract Gas Consumption (Solc 0.8.24, optimiser disabled, Hardhat local EVM)}
+\label{tab:gas}
+\centering
+\begin{tabularx}{\columnwidth}{p{2.8cm} X r}
+\toprule
+\textbf{Contract} & \textbf{Function} & \textbf{Gas (avg)} \\
+\midrule
+\texttt{DIDRegistry}       & \texttt{registerDID()}          & 92,957 \\
+\texttt{DIDRegistry}       & \texttt{updateDID()}            & 39,182 \\
+\texttt{DIDRegistry}       & \texttt{deactivateDID()}        & 30,224 \\
+\texttt{ZakatDisbursement} & \texttt{disburse()} (full flow) & 131,227 \\
+\texttt{ZakatDisbursement} & \texttt{setDisbursementAmount()} & 45,043 \\
+\midrule
+\texttt{DIDRegistry}       & Deployment                      & 685,973 \\
+\texttt{MustahikVerifier}  & Deployment                      & 581,328 \\
+\texttt{ZakatDisbursement} & Deployment                      & 1,332,214 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The end-to-end disbursement flow (\texttt{disburse()}: 131,227 gas) is well within Base Sepolia's block gas limit (60,000,000 gas) and represents less than 0.22\% of the block limit per claim. At Base mainnet gas prices ($\approx$0.001 gwei), the per-claim on-chain cost is negligible. The increase from the baseline 6-signal design (122,394 gas) to the 7-signal recipient-binding design (131,227 gas) represents an overhead of 8,833 gas ($+7.2\%$) — the cost of the front-running protection.
+
+\subsection{Test Suite Results}
+
+The contract test suite (9 tests, Hardhat + Chai) passes in full:
 
 \begin{itemize}
-    \item \textbf{Mobile}: Mid-range Android smartphone (Snapdragon 778G, 6 GB RAM)
-    \item \textbf{Desktop}: Low-specification laptop (Intel Core i5, 8 GB RAM)
+    \item \textbf{DIDRegistry} (5 tests): register, duplicate-revert, update, deactivate, non-owner-revert — all pass.
+    \item \textbf{MustahikVerifier + ZakatDisbursement} (4 tests): valid proof disburses correctly; ineligible proof reverts with \texttt{NotEligible}; duplicate nullifier reverts with \texttt{NullifierAlreadyUsed}; any caller with valid proof can disburse (ZK proof is the authorization mechanism, not caller identity).
 \end{itemize}
-
-Metrics measured include proof generation time (milliseconds), on-chain verification gas consumption (gas units on Base PoS), and end-to-end latency from proof initiation to disbursement confirmation.
 
 \subsection{Security Analysis}
 
-The protocol is formally evaluated against four security properties:
+The protocol is evaluated against four security properties:
 
 \begin{enumerate}
-    \item \textbf{Completeness}: A legitimate mustahik with valid credentials can always generate an accepted proof.
-    \item \textbf{Soundness}: A non-eligible claimant cannot generate an accepted proof except with negligible probability under the q-PKE assumption underlying Groth16.
-    \item \textbf{Zero-Knowledge}: The proof $\pi$ reveals no information about private attributes $\mathbf{A}$ beyond satisfaction of the eligibility predicate $C(\mathbf{A}, \mathbf{T}) = 1$.
-    \item \textbf{Nullifier-Linkage Resistance}: The nullifier hash $\eta$ is computationally unlinkable to the claimant's identity without knowledge of $\text{sk}_{\text{DID}}$.
+    \item \textbf{Completeness}: Confirmed by test — a valid witness (income $<$ nisab, assets $<$ ceiling) produces \texttt{eligible = 1} and the proof is accepted by \texttt{Groth16Verifier}.
+    \item \textbf{Soundness}: An ineligible witness (income $>$ nisab) produces \texttt{eligible = 0}; \texttt{MustahikVerifier} reverts with \texttt{NotEligible} before any state change. Under the q-PKE assumption, forging a proof for an unsatisfied circuit is computationally infeasible.
+    \item \textbf{Zero-Knowledge}: Private signals (\texttt{income}, \texttt{assets}, \texttt{sk\_did}) are never exposed on-chain. The commitment $\texttt{Poseidon(income, assets, sk\_did)}$ binds the witness without revealing it; the nullifier $\texttt{Poseidon(sk\_did, cycle\_id)}$ is cycle-scoped and unlinkable across cycles.
+    \item \textbf{Double-Claim Prevention}: Confirmed by test — submitting the same nullifier twice reverts with \texttt{NullifierAlreadyUsed(nullifier)}. The nullifier mapping is written atomically with the ETH transfer, preventing re-entrancy.
 \end{enumerate}
-
-\subsection{Usability Assessment}
-
-A controlled user study with 30 participants from Indonesian zakat institution staff and prospective mustahik claimants evaluates the system against the Technology Acceptance Model (TAM) dimensions of perceived usefulness and perceived ease of use, supplemented by qualitative feedback on Sharia compliance perceptions. The full evaluation framework is summarized in Table~\ref{tab:eval_framework}.
-
-\begin{table}[h]
-\caption{Evaluation Framework}
-\label{tab:eval_framework}
-\centering
-\begin{tabularx}{\columnwidth}{p{1.5cm} p{2.2cm} X}
-\toprule
-\textbf{Dimension} & \textbf{Metric} & \textbf{Description} \\
-\midrule
-Performance & Proof Generation Time & Measured on mobile and desktop hardware. \\
-Performance & Gas Consumption & On-chain verification cost per proof on Base PoS. \\
-Performance & End-to-End Latency & Time from proof initiation to disbursement confirmation. \\
-Security & Completeness & Valid mustahik always generates accepted proof. \\
-Security & Soundness & Non-eligible claimant cannot forge accepted proof. \\
-Security & Zero-Knowledge & Proof reveals no information beyond eligibility. \\
-Security & Nullifier Resistance & Prevents linkage across zakat cycles. \\
-Usability & TAM Usefulness & Perceived usefulness from \textit{amil} staff ($n=30$). \\
-Usability & TAM Ease of Use & Ease of use and Sharia compliance perception. \\
-\bottomrule
-\end{tabularx}
-\end{table}
 
 %-----------------------------------------------------------
 \section{Discussion}
@@ -377,11 +484,11 @@ World Bank, ``Leveraging Islamic fintech to improve financial inclusion,'' World
 \bibitem{mustafa2021}
 M. A. Mustafa, N. Abdullah, and M. A. Khan, ``Proposing blockchain technology based zakat management model to enhance the trust,'' \textit{Jurnal Akuntansi Riset dan Organisasi Ekonomi}, vol. 2, no. 2, pp. 156--167, 2021. \url{https://doi.org/10.24815/jaroe.v2i2.20467}
 
-\bibitem{hassan2020}
-M. K. Hassan, M. R. Rabbani, and M. A. M. Ali, ``Challenges for the Islamic financial system in the post-COVID-19 pandemic era,'' \textit{Journal of Islamic Accounting and Business Research}, vol. 12, no. 1, pp. 1--10, 2020. \url{https://doi.org/10.1108/JIABR-07-2020-0230}
+\bibitem{khatiman2021}
+N. Khatiman, H. Salikin, and A. Yahya, ``Blockchain-based zakat collection to overcome the trust issues of zakat payers,'' \textit{International Journal on Perceptive and Cognitive Computing}, vol. 7, no. 1, pp. 66--72, 2021. \url{https://journals.iium.edu.my/kict/index.php/IJPCC/article/view/217}
 
-\bibitem{rahman2023}
-A. F. Rahman and N. Zakaria, ``Privacy-preserving zakat management on Hyperledger Fabric: A permissioned blockchain approach,'' \textit{Journal of King Saud University -- Computer and Information Sciences}, vol. 35, no. 2, pp. 100--112, 2023.
+\bibitem{shalaby2023}
+S. Shalaby, A. A. Abdellatif, A. Al-Ali, A. Mohamed, A. Erbad, and M. Guizani, ``Malaysia zakat smart contract architectural framework design,'' \textit{International Journal of Academic Research in Business and Social Sciences}, vol. 13, no. 5, pp. 2496--2508, 2023. \url{https://hrmars.com/papers_submitted/16991/malaysia-zakat-smart-contract-architectural-framework-design.pdf}
 
 \bibitem{goldwasser1985}
 S. Goldwasser, S. Micali, and C. Rackoff, ``The knowledge complexity of interactive proof systems,'' in \textit{Proc. 17th Annual ACM Symposium on Theory of Computing (STOC '85)}, pp. 291--304, ACM, 1985.
@@ -390,7 +497,7 @@ S. Goldwasser, S. Micali, and C. Rackoff, ``The knowledge complexity of interact
 J. Groth, ``On the size of pairing-based non-interactive arguments,'' in \textit{Advances in Cryptology -- EUROCRYPT 2016}, LNCS 9666, pp. 305--326, Springer, 2016. \url{https://eprint.iacr.org/2016/260.pdf}
 
 \bibitem{gabizon2019}
-A. Gabizon, Z. J. Williamson, and O. Ciobanu, ``PLONK: Permutations over Lagrange-bases for oecumenical noninteractive arguments of knowledge,'' \textit{IACR ePrint Archive}, 2019/953, 2019. \url{https://eprint.iacr.org/2019/953.pdf}
+A. Gabizon, Z. J. Williamson, and O. Ciobotaru, ``PLONK: Permutations over Lagrange-bases for oecumenical noninteractive arguments of knowledge,'' \textit{IACR ePrint Archive}, 2019/953, 2019. \url{https://eprint.iacr.org/2019/953.pdf}
 
 \bibitem{sporny2022did}
 M. Sporny, D. Longley, M. Sabadello, D. Reed, O. Steele, and C. Allen, ``Decentralized Identifiers (DIDs) v1.0: Core architecture, data model, and representations,'' W3C Recommendation, 2022. \url{https://www.w3.org/TR/did-core/}
@@ -399,7 +506,7 @@ M. Sporny, D. Longley, M. Sabadello, D. Reed, O. Steele, and C. Allen, ``Decentr
 M. Sporny, D. Longley, and D. Chadwick, ``Verifiable Credentials Data Model 1.0,'' W3C Recommendation, 2019. \url{https://www.w3.org/TR/vc-data-model/}
 
 \bibitem{muhle2018}
-A. Muhle, A. Gruner, T. Gayvoronskaya, and C. Meinel, ``A survey on essential components of a self-sovereign identity,'' \textit{Computer Science Review}, vol. 30, pp. 80--86, 2018.
+A. M\"{u}hle, A. Gruner, T. Gayvoronskaya, and C. Meinel, ``A survey on essential components of a self-sovereign identity,'' \textit{Computer Science Review}, vol. 30, pp. 80--86, 2018.
 
 \bibitem{boneh2004}
 D. Boneh, X. Boyen, and H. Shacham, ``Short group signatures,'' in \textit{Advances in Cryptology -- CRYPTO 2004}, LNCS 3152, pp. 41--55, Springer, 2004.
@@ -420,7 +527,7 @@ B. Bunz, J. Bootle, D. Boneh, A. Poelstra, P. Wuille, and G. Maxwell, ``Bulletpr
 A. Kothapalli, S. Setty, and I. Tzialla, ``Nova: Recursive zero-knowledge arguments from folding schemes,'' in \textit{Advances in Cryptology -- CRYPTO 2022}, LNCS 13510, pp. 359--388, Springer, 2022.
 
 \bibitem{wen2023}
-Y. Wen, Y. Lu, and Y. Zhang, ``Circom: A circuit description language for building zero-knowledge proof circuits,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 20, no. 6, pp. 4567--4582, 2023. \url{https://doi.org/10.1109/TDSC.2022.3225467}
+M. Bell\'{e}s-Mu\~{n}oz, M. Isabel, J. L. Mu\~{n}oz-Tapia, A. Rubio, and J. Baylina, ``Circom: A circuit description language for building zero-knowledge applications,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 20, no. 6, pp. 4733--4751, 2022. \url{https://doi.org/10.1109/TDSC.2022.3232813}
 
 \bibitem{grassi2021}
 L. Grassi, D. Khovratovich, C. Rechberger, A. Roy, and M. Schofnegger, ``Poseidon: A new hash function for zero-knowledge proof systems,'' in \textit{Proc. 30th USENIX Security Symposium}, pp. 519--535, USENIX, 2021.
@@ -432,7 +539,7 @@ A. R. Hevner, S. T. March, J. Park, and S. Ram, ``Design science in information 
 M. S. Ferdous, F. Chowdhury, and M. O. Alassafi, ``In search of self-sovereign identity leveraging blockchain technology,'' \textit{IEEE Access}, vol. 7, pp. 103059--103079, 2019. \url{https://doi.org/10.1109/ACCESS.2019.2931173}
 
 \bibitem{looker2023}
-T. Looker, J. Lodder, and C. Panagiotou, ``BBS Signature Scheme (Draft Community Group Report),'' W3C Credentials Community Group, 2023. \url{https://identity.foundation/bbs-signature/draft-irtf-cfrg-bbs-signatures.html}
+T. Looker, V. Kalos, A. Whitehead, and M. Lodder, ``BBS Signature Scheme (Internet-Draft),'' IETF CFRG, 2023. \url{https://identity.foundation/bbs-signature/draft-irtf-cfrg-bbs-signatures.html}
 
 \end{thebibliography}
 

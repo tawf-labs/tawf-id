@@ -17,6 +17,7 @@ include "node_modules/circomlib/circuits/bitify.circom";
  *   asset_ceiling    - maximum asset value for eligibility
  *   cycle_id         - current zakat cycle identifier
  *   commitment       - Poseidon(income, assets, sk_did) — binds witness to DID
+ *   recipient        - claimant's ETH address as field element (binds proof to recipient)
  *
  * Public outputs:
  *   nullifier        - Poseidon(sk_did, cycle_id) — prevents double-claiming
@@ -33,6 +34,7 @@ template MustahikEligibility() {
     signal input asset_ceiling;
     signal input cycle_id;
     signal input commitment;
+    signal input recipient;  // ETH address as uint160 field element
 
     // Public outputs
     signal output nullifier;
@@ -49,7 +51,6 @@ template MustahikEligibility() {
 
     // -------------------------------------------------------
     // 2. Range proof: income <= nisab_threshold
-    //    LessEqThan(n) checks a <= b for n-bit values
     // -------------------------------------------------------
     component incomeCheck = LessEqThan(64);
     incomeCheck.in[0] <== income;
@@ -76,4 +77,4 @@ template MustahikEligibility() {
     nullifier <== nul.out;
 }
 
-component main {public [nisab_threshold, asset_ceiling, cycle_id, commitment]} = MustahikEligibility();
+component main {public [nisab_threshold, asset_ceiling, cycle_id, commitment, recipient]} = MustahikEligibility();

@@ -1,0 +1,31 @@
+{
+  "constraints": 1261,
+  "wasmKB": "2117.7",
+  "zkeyKB": "585.9",
+  "nPublic": 7,
+  "curve": "bn128",
+  "results": [
+    {
+      "label": "Eligible (income < nisab, assets < ceiling)",
+      "nullifier": "18454987515458682963452302672825632670066464315205298583059952605272403658273",
+      "eligible": "1",
+      "proofGenAvgMs": "141.7",
+      "proofGenMinMs": "91.2",
+      "proofGenMaxMs": "324.0",
+      "proofSizeBytes": 718,
+      "verifyAvgMs": "8.78",
+      "verifyMinMs": "8.09"
+    },
+    {
+      "label": "Ineligible (income > nisab)",
+      "nullifier": "18454987515458682963452302672825632670066464315205298583059952605272403658273",
+      "eligible": "0",
+      "proofGenAvgMs": "90.6",
+      "proofGenMinMs": "88.7",
+      "proofGenMaxMs": "92.9",
+      "proofSizeBytes": 722,
+      "verifyAvgMs": "8.99",
+      "verifyMinMs": "8.31"
+    }
+  ]
+}

@@ -136,7 +136,7 @@ tawf-did serves as the identity layer for the ZISWAF ecosystem. Each mustahik re
 
 - **Circuit:** Circom 2.1.x + circomlib (Poseidon, LessThan, Num2Bits)
 - **Proof system:** Groth16 (SnarkJS)
-- **Contracts:** Solidity 0.8.x, Hardhat, OpenZeppelin
+- **Contracts:** Solidity 0.8.x, Foundry, OpenZeppelin
 - **Network:** Base Sepolia (chainId 84532)
 - **Frontend:** React 18, Vite, Tailwind CSS v4, RainbowKit, wagmi, viem, Framer Motion
 - **Design:** Tawf design system (Cormorant Garamond + Inter, tawf-green/gold/sand)

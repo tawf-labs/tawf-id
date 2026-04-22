@@ -1,8 +1,8 @@
 [profile.default]
 src = "contracts"
 out = "out"
-libs = ["node_modules", "/tmp/forge-std-check/lib"]
+libs = ["node_modules", "/home/zidan/Documents/Github/tawf-id/node_modules", "/home/zidan/Documents/Github/testing-foundry/simple-dex-lisk/lib"]
 remappings = [
-    "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
-    "forge-std/=/tmp/forge-std-check/lib/forge-std/src/"
+    "@openzeppelin/contracts/=/home/zidan/Documents/Github/tawf-id/node_modules/@openzeppelin/contracts/",
+    "forge-std/=/home/zidan/Documents/Github/testing-foundry/simple-dex-lisk/lib/forge-std/src/"
 ]

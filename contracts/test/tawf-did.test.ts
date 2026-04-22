@@ -75,11 +75,11 @@ describe("MustahikVerifier + ZakatDisbursement", () => {
     return { groth16, verifier, disbursement, amil, recipient, other };
   }
 
-  // pubSignals: [nullifier, eligible, nisab_threshold, asset_ceiling, cycle_id, commitment]
-  const validSignals = (): [bigint, bigint, bigint, bigint, bigint, bigint] =>
-    [BigInt(999), BigInt(1), BigInt(5000000), BigInt(50000000), BigInt(1), BigInt(123)];
-  const invalidSignals = (): [bigint, bigint, bigint, bigint, bigint, bigint] =>
-    [BigInt(888), BigInt(0), BigInt(5000000), BigInt(50000000), BigInt(1), BigInt(123)];
+  // pubSignals: [nullifier, eligible, nisab_threshold, asset_ceiling, cycle_id, commitment, recipient]
+  const validSignals = (recipientAddr: string): [bigint, bigint, bigint, bigint, bigint, bigint, bigint] =>
+    [BigInt(999), BigInt(1), BigInt(5000000), BigInt(50000000), BigInt(1), BigInt(123), BigInt(recipientAddr)];
+  const invalidSignals = (recipientAddr: string): [bigint, bigint, bigint, bigint, bigint, bigint, bigint] =>
+    [BigInt(888), BigInt(0), BigInt(5000000), BigInt(50000000), BigInt(1), BigInt(123), BigInt(recipientAddr)];
   const dummyProof = {
     pA: [BigInt(0), BigInt(0)] as [bigint, bigint],
     pB: [[BigInt(0), BigInt(0)], [BigInt(0), BigInt(0)]] as [[bigint, bigint], [bigint, bigint]],
@@ -88,8 +88,9 @@ describe("MustahikVerifier + ZakatDisbursement", () => {
 
   it("accepts valid proof and disburses", async () => {
     const { disbursement, amil, recipient } = await deploy();
-    const balBefore = await ethers.provider.getBalance(recipient.address);
     const amount = ethers.parseEther("0.01");
+    await disbursement.connect(amil).setDisbursementAmount(amount);
+    const balBefore = await ethers.provider.getBalance(recipient.address);
 
     await expect(
       disbursement.connect(amil).disburse(
@@ -97,7 +98,7 @@ describe("MustahikVerifier + ZakatDisbursement", () => {
         recipient.address,
         amount,
         dummyProof.pA, dummyProof.pB, dummyProof.pC,
-        validSignals()
+        validSignals(recipient.address)
       )
     ).to.emit(disbursement, "Disbursed");
 
@@ -107,13 +108,14 @@ describe("MustahikVerifier + ZakatDisbursement", () => {
 
   it("rejects ineligible proof", async () => {
     const { disbursement, amil, recipient, verifier } = await deploy();
+    await disbursement.connect(amil).setDisbursementAmount(ethers.parseEther("0.01"));
     await expect(
       disbursement.connect(amil).disburse(
         "did:ethr:baseSepolia:0xabc",
         recipient.address,
         ethers.parseEther("0.01"),
         dummyProof.pA, dummyProof.pB, dummyProof.pC,
-        invalidSignals()
+        invalidSignals(recipient.address)
       )
     ).to.be.revertedWithCustomError(verifier, "NotEligible");
   });
@@ -121,7 +123,8 @@ describe("MustahikVerifier + ZakatDisbursement", () => {
   it("prevents double-claiming with same nullifier", async () => {
     const { disbursement, amil, recipient, verifier } = await deploy();
     const amount = ethers.parseEther("0.01");
-    const signals = validSignals();
+    await disbursement.connect(amil).setDisbursementAmount(amount);
+    const signals = validSignals(recipient.address);
 
     await disbursement.connect(amil).disburse("did:ethr:baseSepolia:0xabc", recipient.address, amount, dummyProof.pA, dummyProof.pB, dummyProof.pC, signals);
     await expect(
@@ -129,10 +132,26 @@ describe("MustahikVerifier + ZakatDisbursement", () => {
     ).to.be.revertedWithCustomError(verifier, "NullifierAlreadyUsed");
   });
 
-  it("reverts disburse from non-amil", async () => {
-    const { disbursement, recipient, other } = await deploy();
+  it("rejects proof with mismatched recipient (front-running attack)", async () => {
+    const { disbursement, amil, recipient, other, verifier } = await deploy();
+    await disbursement.connect(amil).setDisbursementAmount(ethers.parseEther("0.01"));
+    // Proof was generated for `recipient` but attacker tries to redirect funds to `other`
     await expect(
-      disbursement.connect(other).disburse("did:ethr:baseSepolia:0xabc", recipient.address, ethers.parseEther("0.01"), dummyProof.pA, dummyProof.pB, dummyProof.pC, validSignals())
-    ).to.be.revertedWithCustomError(disbursement, "OnlyAmil");
+      disbursement.connect(amil).disburse(
+        "did:ethr:baseSepolia:0xabc",
+        other.address,
+        ethers.parseEther("0.01"),
+        dummyProof.pA, dummyProof.pB, dummyProof.pC,
+        validSignals(recipient.address)  // proof bound to recipient, not other
+      )
+    ).to.be.revertedWithCustomError(verifier, "RecipientMismatch");
+  });
+
+  it("allows any caller with valid proof to disburse (ZK is the authorization)", async () => {
+    const { disbursement, amil, recipient, other } = await deploy();
+    await disbursement.connect(amil).setDisbursementAmount(ethers.parseEther("0.01"));
+    await expect(
+      disbursement.connect(other).disburse("did:ethr:baseSepolia:0xabc", recipient.address, ethers.parseEther("0.01"), dummyProof.pA, dummyProof.pB, dummyProof.pC, validSignals(recipient.address))
+    ).to.emit(disbursement, "Disbursed");
   });
 });

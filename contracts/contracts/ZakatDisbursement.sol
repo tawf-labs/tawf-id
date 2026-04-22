@@ -2,11 +2,14 @@
 pragma solidity ^0.8.24;
 
 import "./MustahikVerifier.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title ZakatDisbursement
 /// @notice Conditional zakat release upon successful ZK proof verification.
 ///         Holds ETH and disburses to verified mustahik recipients.
-contract ZakatDisbursement {
+contract ZakatDisbursement is ReentrancyGuard, Pausable, Ownable {
     MustahikVerifier public immutable verifier;
     address public immutable amil;
 
@@ -29,13 +32,16 @@ contract ZakatDisbursement {
     error OnlyAmil();
     error InsufficientFunds(uint256 requested, uint256 available);
     error DisbursementAmountNotSet();
+    error InvalidRecipient();
+    error TransferFailed();
 
     modifier onlyAmil() {
         if (msg.sender != amil) revert OnlyAmil();
         _;
     }
 
-    constructor(address _verifier) {
+    constructor(address _verifier) Ownable(msg.sender) {
+        if (_verifier == address(0)) revert InvalidRecipient();
         verifier = MustahikVerifier(_verifier);
         amil = msg.sender;
         currentCycleId = 1;
@@ -53,6 +59,7 @@ contract ZakatDisbursement {
 
     /// @notice Disburse zakat to a verified mustahik.
     ///         Anyone can call this — the ZK proof is the authorization.
+    /// @dev Follows CEI pattern: Checks → Effects → Interactions
     function disburse(
         string calldata did,
         address payable recipient,
@@ -60,19 +67,26 @@ contract ZakatDisbursement {
         uint[2] calldata pA,
         uint[2][2] calldata pB,
         uint[2] calldata pC,
-        uint[6] calldata pubSignals
-    ) external {
+        uint[7] calldata pubSignals
+    ) external nonReentrant whenNotPaused {
+        // CHECKS
+        if (recipient == address(0)) revert InvalidRecipient();
         uint256 amount = disbursementAmount;
         if (amount == 0) revert DisbursementAmountNotSet();
         if (address(this).balance < amount) revert InsufficientFunds(amount, address(this).balance);
 
-        verifier.verifyAndRecord(pA, pB, pC, pubSignals);
+        // Verify proof (external call to verifier)
+        verifier.verifyAndRecord(pA, pB, pC, pubSignals, recipient);
 
+        // EFFECTS
         uint256 nullifier = pubSignals[0];
         totalDisbursed += amount;
         claimCount += 1;
 
-        recipient.transfer(amount);
+        // INTERACTIONS (use call instead of transfer for compatibility)
+        (bool success, ) = recipient.call{value: amount}("");
+        if (!success) revert TransferFailed();
+
         emit Disbursed(did, recipient, amount, currentCycleId, nullifier);
     }
 
@@ -83,7 +97,18 @@ contract ZakatDisbursement {
     }
 
     /// @notice Withdraw remaining funds (amil only, emergency).
-    function withdraw(uint256 amount) external onlyAmil {
-        payable(amil).transfer(amount);
+    function withdraw(uint256 amount) external onlyAmil nonReentrant {
+        (bool success, ) = payable(amil).call{value: amount}("");
+        if (!success) revert TransferFailed();
+    }
+
+    /// @notice Emergency pause (owner only).
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /// @notice Unpause (owner only).
+    function unpause() external onlyOwner {
+        _unpause();
     }
 }

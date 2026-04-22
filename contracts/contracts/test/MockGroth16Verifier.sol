@@ -8,7 +8,7 @@ contract MockGroth16Verifier {
         uint[2] calldata,
         uint[2][2] calldata,
         uint[2] calldata,
-        uint[6] calldata
+        uint[7] calldata
     ) external pure returns (bool) {
         return true;
     }

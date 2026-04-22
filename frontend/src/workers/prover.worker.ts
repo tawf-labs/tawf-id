@@ -13,6 +13,7 @@ export type ProverInput = {
   nisab_threshold: string;
   asset_ceiling: string;
   cycle_id: string;
+  recipient: string;
 };
 
 export type ProverResult =
@@ -26,8 +27,8 @@ self.onmessage = async (e: MessageEvent<ProverInput>) => {
 
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
       { ...e.data, commitment },
-      "/circuits/mustahik_eligibility.wasm",
-      "/circuits/mustahik_eligibility_final.zkey"
+      "/circuits/mustahik_eligibility_v2.wasm",
+      "/circuits/mustahik_eligibility_final_v2.zkey"
     );
     self.postMessage({ ok: true, proof, publicSignals } satisfies ProverResult);
   } catch (err) {

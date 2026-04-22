@@ -17,7 +17,7 @@ const fadeUp = (delay = 0) => ({
 });
 
 // Convert SnarkJS proof to Solidity calldata format
-// pubSignals order from circuit: [nullifier, eligible, nisab_threshold, asset_ceiling, cycle_id, commitment]
+// pubSignals order from circuit: [nullifier, eligible, nisab_threshold, asset_ceiling, cycle_id, commitment, recipient]
 function proofToCalldata(proof: Groth16Proof, publicSignals: string[]) {
   const pA = [BigInt(proof.pi_a[0]), BigInt(proof.pi_a[1])] as [bigint, bigint];
   const pB = [
@@ -25,7 +25,7 @@ function proofToCalldata(proof: Groth16Proof, publicSignals: string[]) {
     [BigInt(proof.pi_b[1][1]), BigInt(proof.pi_b[1][0])],
   ] as [[bigint, bigint], [bigint, bigint]];
   const pC = [BigInt(proof.pi_c[0]), BigInt(proof.pi_c[1])] as [bigint, bigint];
-  const pubSignals = publicSignals.map(BigInt) as [bigint, bigint, bigint, bigint, bigint, bigint];
+  const pubSignals = publicSignals.map(BigInt) as [bigint, bigint, bigint, bigint, bigint, bigint, bigint];
   return { pA, pB, pC, pubSignals };
 }
 
@@ -63,7 +63,7 @@ export function Claim() {
   };
 
   const handleGenerateProof = async () => {
-    if (!validate()) return;
+    if (!validate() || !address) return;
     setStep(2);
     const sk_did = BigInt(address || "0x0").toString();
     prove({
@@ -73,6 +73,7 @@ export function Claim() {
       nisab_threshold: NISAB,
       asset_ceiling: ASSET_CEILING,
       cycle_id: CYCLE_ID,
+      recipient: BigInt(address).toString(), // Add recipient as 7th public signal
     });
   };
 
