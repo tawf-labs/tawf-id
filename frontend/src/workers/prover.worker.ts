@@ -31,6 +31,8 @@ self.onmessage = async (e: MessageEvent<ProverInput>) => {
     );
     self.postMessage({ ok: true, proof, publicSignals } satisfies ProverResult);
   } catch (err) {
-    self.postMessage({ ok: false, error: String(err) } satisfies ProverResult);
+    console.error("[prover.worker]", err);
+    const message = err instanceof Error ? `${err.message}\n${err.stack ?? ""}` : String(err);
+    self.postMessage({ ok: false, error: message } satisfies ProverResult);
   }
 };
