@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { buildPoseidon } from "circomlibjs";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -67,9 +66,6 @@ export function Claim() {
     if (!validate()) return;
     setStep(2);
     const sk_did = BigInt(address || "0x0").toString();
-    const poseidon = await buildPoseidon();
-    const hash = poseidon([BigInt(form.income), BigInt(form.assets), BigInt(sk_did)]);
-    const commitment = poseidon.F.toString(hash);
     prove({
       income: form.income,
       assets: form.assets,
@@ -77,7 +73,6 @@ export function Claim() {
       nisab_threshold: NISAB,
       asset_ceiling: ASSET_CEILING,
       cycle_id: CYCLE_ID,
-      commitment,
     });
   };
 
