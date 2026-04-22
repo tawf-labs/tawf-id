@@ -13,6 +13,7 @@ contract ZakatDisbursement {
     uint256 public currentCycleId;
     uint256 public totalDisbursed;
     uint256 public claimCount;
+    uint256 public disbursementAmount;
 
     event Disbursed(
         string did,
@@ -23,10 +24,11 @@ contract ZakatDisbursement {
     );
     event CycleAdvanced(uint256 newCycleId);
     event FundsDeposited(address indexed depositor, uint256 amount);
+    event DisbursementAmountSet(uint256 amount);
 
     error OnlyAmil();
     error InsufficientFunds(uint256 requested, uint256 available);
-    error ZeroAmount();
+    error DisbursementAmountNotSet();
 
     modifier onlyAmil() {
         if (msg.sender != amil) revert OnlyAmil();
@@ -43,18 +45,25 @@ contract ZakatDisbursement {
         emit FundsDeposited(msg.sender, msg.value);
     }
 
+    /// @notice Set the fixed disbursement amount per claim (amil only).
+    function setDisbursementAmount(uint256 amount) external onlyAmil {
+        disbursementAmount = amount;
+        emit DisbursementAmountSet(amount);
+    }
+
     /// @notice Disburse zakat to a verified mustahik.
-    ///         Verifies the ZK proof inline before releasing funds.
+    ///         Anyone can call this — the ZK proof is the authorization.
     function disburse(
         string calldata did,
         address payable recipient,
-        uint256 amount,
+        uint256, /* amount ignored — use disbursementAmount */
         uint[2] calldata pA,
         uint[2][2] calldata pB,
         uint[2] calldata pC,
         uint[6] calldata pubSignals
-    ) external onlyAmil {
-        if (amount == 0) revert ZeroAmount();
+    ) external {
+        uint256 amount = disbursementAmount;
+        if (amount == 0) revert DisbursementAmountNotSet();
         if (address(this).balance < amount) revert InsufficientFunds(amount, address(this).balance);
 
         verifier.verifyAndRecord(pA, pB, pC, pubSignals);

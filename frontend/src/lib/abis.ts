@@ -73,6 +73,20 @@ export const DISBURSEMENT_ABI = [
     outputs: [],
   },
   {
+    name: "disbursementAmount",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    name: "setDisbursementAmount",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "amount", type: "uint256" }],
+    outputs: [],
+  },
+  {
     name: "currentCycleId",
     type: "function",
     stateMutability: "view",
