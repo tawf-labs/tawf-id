@@ -10,3 +10,4 @@ broadcast/
 *.ptau
 frontend/public/circuits/*.zkey
 frontend/public/circuits/*.wasm
+*.tsbuildinfo
