@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { buildPoseidon } from "circomlibjs";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -62,11 +63,13 @@ export function Claim() {
     return Object.keys(e).length === 0;
   };
 
-  const handleGenerateProof = () => {
+  const handleGenerateProof = async () => {
     if (!validate()) return;
     setStep(2);
     const sk_did = BigInt(address || "0x0").toString();
-    const commitment = "0";
+    const poseidon = await buildPoseidon();
+    const hash = poseidon([BigInt(form.income), BigInt(form.assets), BigInt(sk_did)]);
+    const commitment = poseidon.F.toString(hash);
     prove({
       income: form.income,
       assets: form.assets,
