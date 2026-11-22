@@ -11,6 +11,20 @@
   --color-tawf-muted: #6b7280;
   --color-tawf-white: #ffffff;
 
+  /* Landing palette, flat colours only (no gradients). Additive: the app pages keep using the
+     --color-tawf-* tokens above. These are also used by the shared header and footer. */
+  --color-ink: #10261F;       /* headings, body, dark bands */
+  --color-muted: #4A5F57;     /* secondary text */
+  --color-stone: #EEF1EC;     /* landing page ground */
+  --color-paper: #FBFCFA;     /* cards */
+  --color-glaze: #DCE8E1;     /* hero and closing bands */
+  --color-mint: #D3ECDD;      /* quote band */
+  --color-line: #CED8D1;      /* borders */
+  --color-accent: #1F6B54;    /* buttons, links, eyebrows, focus rings */
+  --color-accent-deep: #175545; /* button hover */
+  --color-honey: #8A6414;     /* text on stone or paper only */
+  --color-butter: #F2E3B5;    /* second accent on dark bands */
+
   --font-serif: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
 
@@ -20,6 +34,22 @@
 
   --spacing-section: 6rem;
   --spacing-section-mobile: 4rem;
+}
+
+/* Landing tokens, scoped to the wrapper attribute so the app pages keep their current look.
+   The new palette names live in @theme (that is what generates the utilities); this block
+   remaps the legacy --color-tawf-* variables the landing subtree can still reach for, so no
+   serif, gold or old forest green leaks into the landing. */
+[data-landing] {
+  --color-tawf-green: #10261F;
+  --color-tawf-green-light: #175545;
+  --color-tawf-sand: #EEF1EC;
+  --color-tawf-sand-dark: #DCE8E1;
+  --color-tawf-ink: #10261F;
+  --color-tawf-muted: #4A5F57;
+  --color-tawf-white: #FBFCFA;
+  --color-tawf-gold: #1F6B54;
+  --font-serif: "Inter", system-ui, sans-serif;
 }
 
 *,

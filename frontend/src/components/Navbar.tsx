@@ -19,6 +19,8 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   const onGreenPage = GREEN_BG_PAGES.includes(pathname);
+  /* Those pages keep their dark green header band, so the bar reads light until it scrolls. */
+  const lightBar = onGreenPage && !scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -30,39 +32,36 @@ export function Navbar() {
 
   return (
     <header
-      className="fixed top-0 inset-x-0 z-50 h-20"
-      style={{
-        background: scrolled ? "color-mix(in srgb, var(--color-tawf-sand) 92%, transparent)" : "transparent",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid color-mix(in srgb, var(--color-tawf-green) 10%, transparent)" : "none",
-        transition: "background 0.3s, backdrop-filter 0.3s, border-color 0.3s",
-      }}
+      className={`fixed inset-x-0 top-0 z-50 h-20 border-b transition-colors duration-300 ${
+        scrolled ? "border-line bg-stone/90 backdrop-blur-md" : "border-transparent"
+      }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
         {/* Logo */}
         <Link
           to="/"
-          className="text-2xl font-medium tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tawf-gold rounded"
-          style={{ fontFamily: "var(--font-serif)", color: onGreenPage && !scrolled ? "var(--color-tawf-sand)" : "var(--color-tawf-green)" }}
+          className={`rounded text-2xl font-medium tracking-[-0.03em] focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none ${
+            lightBar ? "text-stone" : "text-ink"
+          }`}
         >
           tawf-did
         </Link>
 
         {/* Desktop nav */}
-        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-8">
+        <nav aria-label="Main navigation" className="hidden items-center gap-7 md:flex">
           {NAV_LINKS.map(({ to, label }) => {
             const isActive = pathname === to;
-            const activeColor = onGreenPage && !scrolled ? "var(--color-tawf-sand)" : "var(--color-tawf-green)";
-            const mutedColor = onGreenPage && !scrolled ? "rgba(249,246,240,0.6)" : "var(--color-tawf-muted)";
+            const base =
+              "rounded px-1 py-1 text-[13px] font-medium tracking-[0.06em] uppercase transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none";
+            const tone = lightBar
+              ? isActive
+                ? "text-stone"
+                : "text-stone/65 hover:text-stone"
+              : isActive
+                ? "text-accent"
+                : "text-muted hover:text-accent";
             return (
-              <Link
-                key={to}
-                to={to}
-                className="text-xs tracking-widest uppercase font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tawf-gold rounded px-1"
-                style={{ color: isActive ? activeColor : mutedColor }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = activeColor)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = isActive ? activeColor : mutedColor)}
-              >
+              <Link key={to} to={to} className={`${base} ${tone}`}>
                 {label}
               </Link>
             );
@@ -72,13 +71,14 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <ConnectButton chainStatus="icon" showBalance={false} />
           <button
-            className="md:hidden p-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tawf-gold"
+            className={`flex h-11 w-11 items-center justify-center rounded-lg focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none md:hidden ${
+              lightBar ? "text-stone" : "text-ink"
+            }`}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            style={{ color: onGreenPage && !scrolled ? "var(--color-tawf-sand)" : "var(--color-tawf-green)" }}
           >
-            {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+            {open ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
           </button>
         </div>
       </div>
@@ -87,15 +87,15 @@ export function Navbar() {
       {open && (
         <nav
           aria-label="Mobile navigation"
-          className="md:hidden px-6 pb-6 pt-2 flex flex-col gap-4"
-          style={{ background: "var(--color-tawf-sand)", borderBottom: "1px solid color-mix(in srgb, var(--color-tawf-green) 10%, transparent)" }}
+          className="border-b border-line bg-paper px-6 pt-2 pb-4 md:hidden"
         >
           {NAV_LINKS.map(({ to, label }) => (
             <Link
               key={to}
               to={to}
-              className="text-xs tracking-widest uppercase font-medium py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tawf-gold rounded"
-              style={{ color: pathname === to ? "var(--color-tawf-green)" : "var(--color-tawf-muted)" }}
+              className={`flex min-h-[44px] items-center rounded px-1 text-[13px] font-medium tracking-[0.06em] uppercase focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none ${
+                pathname === to ? "text-accent" : "text-muted hover:text-accent"
+              }`}
             >
               {label}
             </Link>

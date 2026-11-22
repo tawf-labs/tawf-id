@@ -26,26 +26,18 @@ const FOOTER_LINKS = {
 
 export function Footer() {
   return (
-    <footer style={{ background: "var(--color-tawf-ink)" }} aria-label="Site footer">
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-          <div className="md:col-span-1">
-            <p
-              className="text-2xl font-medium mb-3"
-              style={{ fontFamily: "var(--font-serif)", color: "var(--color-tawf-sand)" }}
-            >
-              tawf-did
-            </p>
-            <p className="text-sm leading-relaxed" style={{ color: "rgba(249,246,240,0.55)" }}>
+    <footer className="border-t border-white/10 bg-ink" aria-label="Site footer">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-12 grid grid-cols-1 gap-10 md:grid-cols-3 lg:grid-cols-5">
+          <div>
+            <p className="mb-3 text-2xl font-medium tracking-[-0.03em] text-paper">tawf-did</p>
+            <p className="max-w-[34ch] text-sm leading-relaxed text-white/60">
               Zero-Knowledge Decentralized Identity for privacy-preserving mustahik verification. Built for{" "}
               <a
                 href="https://tawf.foundation"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors duration-200"
-                style={{ color: "var(--color-tawf-gold)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.75")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                className="text-butter transition-colors duration-200 hover:text-white focus-visible:ring-2 focus-visible:ring-butter focus-visible:outline-none"
               >
                 tawf.foundation
               </a>{" "}
@@ -54,48 +46,35 @@ export function Footer() {
           </div>
           {Object.entries(FOOTER_LINKS).map(([section, links]) => (
             <div key={section}>
-              <p
-                className="text-xs tracking-widest uppercase mb-4 font-medium"
-                style={{ color: "var(--color-tawf-gold)" }}
-              >
-                {section}
-              </p>
-              <ul className="flex flex-col gap-2">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    {"to" in link && link.to ? (
-                      <Link
-                        to={link.to}
-                        className="text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-tawf-gold rounded"
-                        style={{ color: "rgba(249,246,240,0.55)" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-tawf-gold)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(249,246,240,0.55)")}
-                      >
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <a
-                        href={"href" in link ? link.href : "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-tawf-gold rounded"
-                        style={{ color: "rgba(249,246,240,0.55)" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-tawf-gold)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(249,246,240,0.55)")}
-                      >
-                        {link.label} ↗
-                      </a>
-                    )}
-                  </li>
-                ))}
+              <p className="mb-4 text-xs font-medium tracking-[0.12em] uppercase text-white">{section}</p>
+              <ul className="flex flex-col gap-1">
+                {links.map((link) => {
+                  const className =
+                    "inline-flex min-h-[32px] items-center rounded text-sm text-white/60 transition-colors duration-200 hover:text-butter focus-visible:ring-2 focus-visible:ring-butter focus-visible:outline-none";
+                  return (
+                    <li key={link.label}>
+                      {"to" in link && link.to ? (
+                        <Link to={link.to} className={className}>
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <a
+                          href={"href" in link ? link.href : "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={className}
+                        >
+                          {link.label} ↗
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
         </div>
-        <div
-          className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.08)", color: "rgba(249,246,240,0.35)" }}
-        >
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs text-white/45 md:flex-row">
           <p>© 2026 Tawf Islamic Foundation. Research prototype on Base Sepolia.</p>
           <p>Built with Circom · SnarkJS · Solidity · React</p>
         </div>
