@@ -19,7 +19,7 @@ export function StatsSection() {
               <dt className="text-[clamp(26px,3vw,36px)] font-medium leading-none tracking-[-0.03em] text-paper">
                 {value}
               </dt>
-              <dd className="mt-2.5 text-[13px] font-medium uppercase tracking-[0.08em] text-white/55">
+              <dd className="mt-2.5 text-[13px] font-medium uppercase tracking-[0.08em] text-white/80">
                 {label}
               </dd>
             </Reveal>

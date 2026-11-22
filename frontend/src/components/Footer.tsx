@@ -31,7 +31,7 @@ export function Footer() {
         <div className="mb-12 grid grid-cols-1 gap-10 md:grid-cols-3 lg:grid-cols-5">
           <div>
             <p className="mb-3 text-2xl font-medium tracking-[-0.03em] text-paper">tawf-did</p>
-            <p className="max-w-[34ch] text-sm leading-relaxed text-white/60">
+            <p className="max-w-[34ch] text-sm leading-relaxed text-white/80">
               Zero-Knowledge Decentralized Identity for privacy-preserving mustahik verification. Built for{" "}
               <a
                 href="https://tawf.foundation"
@@ -50,7 +50,7 @@ export function Footer() {
               <ul className="flex flex-col gap-1">
                 {links.map((link) => {
                   const className =
-                    "inline-flex min-h-[32px] items-center rounded text-sm text-white/60 transition-colors duration-200 hover:text-butter focus-visible:ring-2 focus-visible:ring-butter focus-visible:outline-none";
+                    "inline-flex min-h-[32px] items-center rounded text-sm text-white/80 transition-colors duration-200 hover:text-butter focus-visible:ring-2 focus-visible:ring-butter focus-visible:outline-none";
                   return (
                     <li key={link.label}>
                       {"to" in link && link.to ? (
@@ -74,7 +74,7 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs text-white/45 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs text-white/80 md:flex-row">
           <p>© 2026 Tawf Islamic Foundation. Research prototype on Base Sepolia.</p>
           <p>Built with Circom · SnarkJS · Solidity · React</p>
         </div>
